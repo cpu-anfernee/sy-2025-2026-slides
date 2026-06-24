@@ -1,0 +1,41 @@
+:root {
+	--r-main-font-size: 32px;
+	--r-block-margin: 10px;
+}
+.reveal pre code {
+	max-height: 380px;
+	font-size: 0.75em;
+	line-height: 1.25em;
+}
+.reveal section p,
+.reveal section li {
+	margin-bottom: 0.25em;
+	line-height: 1.2em;
+}
+.reveal h2 {
+	margin-bottom: 0.3em;
+}
+.reveal h3,
+.reveal h4 {
+	margin-bottom: 0.25em;
+	color: #ff79c6;
+}
+.reveal ul,
+.reveal ol {
+	margin-bottom: 0.3em;
+}
+.text-smaller {
+	font-size: 0.85em;
+}
+.highlight-text {
+	color: #50fa7b;
+}
+/* Custom inline code treatment to replace backticks cleanly */
+.reveal :not(pre) > code {
+	background-color: #44475a;
+	color: #f8f8f2;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-family: monospace;
+	font-size: 0.9em;
+}
