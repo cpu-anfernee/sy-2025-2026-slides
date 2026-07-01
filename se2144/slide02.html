@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>SE 2144: Next.js - Chapter 1</title>
+		<title>SE 2144: NextJS - Building Your First App</title>
 
 		<link rel="stylesheet" href="../dist/reset.css">
 		<link rel="stylesheet" href="../dist/reveal.css">
@@ -13,13 +13,41 @@
 		<link rel="stylesheet" href="../dist/plugin/highlight/monokai.css">
 		
 		<style>
-			/* Custom tweaks for NextJS theme */
-			.reveal h1, .reveal h2, .reveal h3, .reveal h4 { color: #f8fafc; }
-			.reveal .accent { color: #22d3ee; }
-			.reveal .subtext { font-size: 0.6em; color: #94a3b8; }
-			.reveal ul { font-size: 0.8em; }
-			.reveal pre { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); }
-			.reveal .callout { background: rgba(30, 41, 59, 0.6); padding: 20px; border-left: 5px solid #22d3ee; border-radius: 4px; text-align: left; font-size: 0.75em; margin-top: 20px; }
+			/* Custom NextJS Course Theme */
+			:root {
+				--next-cyan: #61dafb;
+				--next-dark: #1e293b;
+				--next-accent: #e24a8d;
+				--text-muted: #94a3b8;
+			}
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4 { color: #f8fafc; font-weight: bold; }
+			.reveal .accent { color: var(--next-cyan); }
+			.reveal .accent-alt { color: var(--next-accent); }
+			.reveal .subtext { font-size: 0.6em; color: var(--text-muted); line-height: 1.4; }
+			.reveal ul { font-size: 0.75em; }
+			.reveal li { margin-bottom: 10px; }
+			.reveal pre { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); border-radius: 8px; font-size: 0.55em; }
+			.reveal .step-badge { 
+				display: inline-block; 
+				background: var(--next-cyan); 
+				color: #000; 
+				padding: 5px 15px; 
+				border-radius: 20px; 
+				font-size: 0.4em; 
+				font-weight: bold;
+				text-transform: uppercase;
+				vertical-align: middle;
+				margin-bottom: 20px;
+			}
+			.reveal .info-box {
+				background: rgba(30, 41, 59, 0.8);
+				border-left: 5px solid var(--next-cyan);
+				padding: 20px;
+				font-size: 0.7em;
+				text-align: left;
+				margin-top: 20px;
+				border-radius: 4px;
+			}
 		</style>
 	</head>
 	<body>
@@ -27,186 +55,310 @@
 			<div class="slides">
 
 				<section>
-					<h3 class="subtext">CHAPTER 1</h3>
-					<h1>Warming up with <span class="accent">NextJS</span></h1>
-					<p style="font-style: italic; color: #cbd5e1; margin-top: 40px;">"The beginning is always today." — Mary Shelley</p>
-					<p class="subtext">Embark on a journey into sophisticated web development with the industry's most advanced framework.</p>
+					<h3 style="color: var(--text-muted); font-size: 1em;">Practical Application</h3>
+					<h1>Building Your First <br><span class="accent">NextJS</span> App</h1>
+					<p class="subtext" style="margin-top: 30px;">A comprehensive, step-by-step guide applying the core concepts from Chapter 1.</p>
+					<p class="subtext">Focus: Environment, Routing, Components, and the Pages Directory.</p>
 				</section>
 
 				<section>
-					<h2 class="accent">Phase I: The Foundation</h2>
-					<p>Setting up the environment and executing your first NextJS application with industry-standard patterns.</p>
+					<h2>What Are We Building?</h2>
+					<p class="subtext">We will build a simple <strong>Developer Portfolio & Blog</strong>. It will demonstrate:</p>
+					<ul>
+						<li><span class="accent">Project Initialization:</span> Setting up with TypeScript.</li>
+						<li><span class="accent">Component Architecture:</span> Building a reusable Layout.</li>
+						<li><span class="accent">Static Routing:</span> Creating Home and About pages.</li>
+						<li><span class="accent">Navigation:</span> Client-side transitions using <code>next/link</code>.</li>
+						<li><span class="accent">Dynamic Routing:</span> Creating a dynamic blog post reader.</li>
+						<li><span class="accent">Styling:</span> Applying CSS Modules.</li>
+					</ul>
 				</section>
 
 				<section>
-					<h2>Modern Installation</h2>
-					<p class="subtext">We recommend <code>Yarn</code> for its speed, network performance, and reliability. However, <code>NPM</code> remains a robust fallback.</p>
+					<div class="step-badge">Step 1</div>
+					<h2>Environment & Init</h2>
+					<p class="subtext">First, open your terminal. Navigate to your desired workspace folder and run the <code>create-next-app</code> command. We will use the traditional Pages router for this exercise.</p>
 					
-					<div style="display: flex; gap: 20px; flex-direction: column;">
-						<div style="flex: 1;">
-							<h4 style="font-size: 0.8em; color: #22d3ee;">Using Yarn</h4>
-							<pre><code class="language-bash" data-trim>
-yarn create next-app --typescript
-							</code></pre>
-						</div>
-						<div style="flex: 1;">
-							<h4 style="font-size: 0.8em; color: #22d3ee;">Using NPM</h4>
-							<pre><code class="language-bash" data-trim>
-npx create-next-app@latest --typescript
-							</code></pre>
-						</div>
-					</div>
-				</section>
+					<pre><code class="language-bash" data-trim>
+# Initialize a new Next.js project named "my-portfolio"
+yarn create next-app my-portfolio --typescript
 
-				<section>
-					<h2>Local Development Scripts</h2>
-					<p class="subtext">Ensure your <code>package.json</code> contains these vital lifecycle scripts.</p>
-					<ul>
-						<li><code>"dev"</code>: Starts the development server with Hot Module Replacement (HMR).</li>
-						<li><code>"build"</code>: Compiles and optimizes the application for production.</li>
-						<li><code>"start"</code>: Runs the production build generated by the build script.</li>
-					</ul>
-					<div class="callout">
-						Run <code>yarn dev</code> in your root directory. Your application will typically be accessible at: <strong>http://localhost:3000</strong>
-					</div>
-				</section>
-
-				<section>
-					<h2>Folder Structure: The "Pages" Core</h2>
-					<p class="subtext">NextJS utilizes a file-system based router built on the concept of pages.</p>
-					<ul>
-						<li>The basic element is a React Component exported from a file within the <code>pages/</code> directory.</li>
-						<li>The default entry point is always <code>pages/index.tsx</code>.</li>
-						<li>Every new file in this folder automatically becomes a URL endpoint. Zero manual routing configuration required.</li>
-					</ul>
-				</section>
-
-				<section>
-					<h2 class="accent">Phase II: Power Tools</h2>
-					<p>Mastering configuration, TypeScript integration, and environment management.</p>
-				</section>
-
-				<section>
-					<h2>Config Customization</h2>
-					<p class="subtext">The <code>next.config.js</code> file allows you to inject custom logic or third-party plugins directly into the Webpack build process.</p>
-					<pre><code class="language-javascript" data-trim data-line-numbers="1-8|2|3-7">
-const nextConfig = {
-  reactStrictMode: true, // Highlights potential problems
-  webpack: (config, { buildId, dev, isServer, webpack }) => {
-    // Inject custom webpack configurations here
-    return config;
-  }
-}
-module.exports = nextConfig
+# The CLI will ask you some questions. 
+# For this Chapter 1 tutorial, answer as follows:
+? Would you like to use ESLint? › Yes
+? Would you like to use Tailwind CSS? › No (We will use CSS Modules)
+? Would you like to use `src/` directory? › No
+? Would you like to use App Router? › No (Use Pages Router)
+? Would you like to customize the default import alias? › No
 					</code></pre>
+					<p class="subtext">Once finished, navigate into the directory: <code>cd my-portfolio</code></p>
 				</section>
 
 				<section>
-					<h2>Managing Secrets</h2>
-					<h4 style="color: #ff5555; font-size: 0.8em;">⚠️ Prevent Leak Vulnerabilities</h4>
-					<ul>
-						<li>Never hardcode API keys, database credentials, or secrets in your components.</li>
-						<li>Use <code>.env.local</code> for local development environment variables.</li>
-						<li>Access these values in your server-side logic using <code>process.env.SECRET_NAME</code>.</li>
-					</ul>
-					<p class="subtext" style="color: #ffb86c; margin-top: 20px;">Note: Any modification to your environment files requires a full development server restart.</p>
-				</section>
-
-				<section>
-					<h2>TypeScript Workflow</h2>
-					<p class="subtext">NextJS simplifies TypeScript implementation drastically.</p>
-					<ol style="font-size: 0.75em;">
-						<li>Create an empty <code>tsconfig.json</code> file in your root.</li>
-						<li>Run <code>yarn dev</code>.</li>
-						<li>NextJS automatically populates the config file with strict defaults and generates a <code>next-env.d.ts</code> file.</li>
-					</ol>
-					<div class="callout">
-						<strong>Rule of Thumb:</strong> Use <code>.ts</code> or <code>.tsx</code> for implementation (logic and components). Use <code>.d.ts</code> strictly for ambient type declarations.
+					<div class="step-badge">Step 2</div>
+					<h2>Cleaning the Boilerplate</h2>
+					<p class="subtext">NextJS gives us a lot of placeholder code. Let's start fresh to understand how everything connects.</p>
+					<div style="display: flex; gap: 20px; align-items: center;">
+						<div style="flex: 1; text-align: left; font-size: 0.7em;">
+							<strong>Actions:</strong>
+							<ol>
+								<li>Go to <code>pages/index.tsx</code> and delete everything inside.</li>
+								<li>Go to <code>styles/Home.module.css</code> and clear it out.</li>
+								<li>Delete the <code>pages/api</code> folder (we don't need backend routes yet).</li>
+							</ol>
+						</div>
+						<div style="flex: 1;">
+							<pre><code class="language-text" data-trim>
+my-portfolio/
+├── pages/
+│   ├── _app.tsx
+│   ├── _document.tsx
+│   └── index.tsx (cleared)
+├── public/
+├── styles/
+│   ├── globals.css
+│   └── Home.module.css (cleared)
+└── package.json
+							</code></pre>
+						</div>
 					</div>
 				</section>
 
 				<section>
-					<h2 class="accent">Phase III: Styling</h2>
-					<p>Crafting the visual layer with scoped styles and modern tools.</p>
+					<div class="step-badge">Step 3</div>
+					<h2>The Global Wrapper</h2>
+					<p class="subtext">Let's look at <code>pages/_app.tsx</code>. This is the root component that wraps <strong>every</strong> page in your application. It's where you import global CSS.</p>
+					<pre><code class="language-tsx" data-trim data-line-numbers="1-2|4-8">
+// pages/_app.tsx
+import '@/styles/globals.css'
+import type { AppProps } from 'next/app'
+
+export default function App({ Component, pageProps }: AppProps) {
+  // 'Component' is the active page (e.g., index.tsx, about.tsx)
+  return <Component {...pageProps} />
+}
+					</code></pre>
+					<div class="info-box">
+						<strong>Concept Check:</strong> You cannot import global CSS anywhere except here. Component-specific CSS (Modules) will be used everywhere else.
+					</div>
 				</section>
 
 				<section>
-					<h2>Advanced Styling Approaches</h2>
-					<ul>
-						<li style="margin-bottom: 15px;"><strong>SCSS Modules:</strong> Native support. Name files as <code>[name].module.scss</code>. Styles are locally scoped by default, preventing global namespace collisions.</li>
-						<li style="margin-bottom: 15px;"><strong>Global Styles:</strong> Reserved exclusively for <code>pages/_app.tsx</code>. Do not import global CSS anywhere else.</li>
-						<li style="margin-bottom: 15px;"><strong>Tailwind CSS:</strong> (Our T3 Stack choice). Utility-first CSS framework that scales seamlessly with NextJS component architecture.</li>
-					</ul>
-				</section>
+					<div class="step-badge">Step 4</div>
+					<h2>Building a Reusable Layout</h2>
+					<p class="subtext">Let's create a standard navigation bar that appears on every page. Create a new folder named <code>components/</code> in the root, and add <code>Layout.tsx</code>.</p>
+					<pre><code class="language-tsx" data-trim data-line-numbers="1-2|4-8|10-21">
+// components/Layout.tsx
+import Link from 'next/link';
+import { ReactNode } from 'react';
 
-				<section>
-					<h2 class="accent">Phase IV: Routing</h2>
-					<p>Mastering dynamic URL segments, programmatic navigation, and shallow routing.</p>
-				</section>
+// Define the expected props
+interface LayoutProps {
+  children: ReactNode;
+}
 
-				<section>
-					<h2>Routing Mechanisms</h2>
-					<table style="font-size: 0.7em; width: 100%;">
-						<thead>
-							<tr>
-								<th>Type</th>
-								<th>File Naming</th>
-								<th>Description</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="accent">Static</td>
-								<td><code>about.tsx</code></td>
-								<td>Maps directly to exactly <code>/about</code></td>
-							</tr>
-							<tr>
-								<td class="accent">Dynamic</td>
-								<td><code>[recipe].tsx</code></td>
-								<td>Captures URL variables (e.g., <code>/pancakes</code>) into the router query object.</td>
-							</tr>
-							<tr>
-								<td class="accent">Catch-all</td>
-								<td><code>[...slug].tsx</code></td>
-								<td>Captures infinite nested paths (e.g., <code>/docs/v1/auth</code>) as an array.</td>
-							</tr>
-						</tbody>
-					</table>
-				</section>
-
-				<section>
-					<h2>Navigation: useRouter Hook</h2>
-					<p class="subtext">The <code>useRouter()</code> hook provides programmatic control over routing inside functional components.</p>
-					<pre><code class="language-typescript" data-trim data-line-numbers="1,4,7">
-import { useRouter } from 'next/router'
-
-export default function LoginButton() {
-  const router = useRouter()
-
-  const handleLogin = () => {
-    router.push('/dashboard') // Triggers client-side navigation
-  }
-
-  return <button onClick={handleLogin}>Enter System</button>
+export default function Layout({ children }: LayoutProps) {
+  return (
+    <div className="layout-container">
+      <nav style={{ padding: '20px', background: '#333', color: 'white' }}>
+        <Link href="/" style={{ marginRight: '15px' }}>Home</Link>
+        <Link href="/about">About</Link>
+      </nav>
+      {/* The actual page content is injected here */}
+      <main style={{ padding: '20px' }}>{children}</main>
+    </div>
+  );
 }
 					</code></pre>
 				</section>
 
 				<section>
-					<h2>Shallow Routing</h2>
-					<p class="subtext">Allows you to change the URL without re-running data fetching methods (like <code>getServerSideProps</code>).</p>
-					<pre><code class="language-typescript" data-trim>
-router.push('/?page=2', undefined, { shallow: true })
+					<div class="step-badge">Step 5</div>
+					<h2>Applying the Layout & next/link</h2>
+					<p class="subtext">Notice the use of <code>&lt;Link&gt;</code> in the previous slide? This is NextJS's built-in client-side router component.</p>
+					<ul>
+						<li>Instead of <code>&lt;a href="/about"&gt;</code>, we use <code>&lt;Link href="/about"&gt;</code>.</li>
+						<li><strong>Why?</strong> It prevents the browser from doing a full page refresh. It fetches the JavaScript for the new page instantly.</li>
+					</ul>
+					<br>
+					<p class="subtext" style="margin-top: 10px;">To apply our Layout globally, let's update <code>_app.tsx</code>:</p>
+					<pre><code class="language-tsx" data-trim data-line-numbers="2,6,8">
+import '@/styles/globals.css'
+import Layout from '@/components/Layout'
+import type { AppProps } from 'next/app'
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  )
+}
 					</code></pre>
-					<div class="callout">
-						<strong>Optimization Use Case:</strong> Perfect for pagination, filtering, or tab switching where the page state changes but the heavy underlying data core does not need a complete server re-fetch.
+				</section>
+
+				<section>
+					<div class="step-badge">Step 6</div>
+					<h2>The Home Page (Static Route)</h2>
+					<p class="subtext">Now let's rebuild our landing page. Because it is named <code>index.tsx</code> inside the <code>pages/</code> directory, NextJS maps it to the root URL (<code>/</code>).</p>
+					<pre><code class="language-tsx" data-trim data-line-numbers="1,4-14">
+// pages/index.tsx
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <div>
+      <h1>Welcome to My Portfolio</h1>
+      <p>I am a web developer learning NextJS.</p>
+      
+      <h3>Recent Posts</h3>
+      <ul>
+        <li><Link href="/post/learning-nextjs">Learning NextJS</Link></li>
+        <li><Link href="/post/routing-is-fun">Routing is Fun</Link></li>
+      </ul>
+    </div>
+  )
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<div class="step-badge">Step 7</div>
+					<h2>The About Page (Static Route)</h2>
+					<p class="subtext">To create an <code>/about</code> URL, we simply create an <code>about.tsx</code> file inside the <code>pages/</code> folder. The file system <em>is</em> the API.</p>
+					<pre><code class="language-tsx" data-trim>
+// pages/about.tsx
+
+export default function About() {
+  return (
+    <div>
+      <h1>About Me</h1>
+      <p>
+        I am an SE 2144 student currently mastering the T3 stack. 
+        Next.js makes building React applications incredibly fast.
+      </p>
+    </div>
+  )
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<div class="step-badge">Step 8</div>
+					<h2>Dynamic Routing Setup</h2>
+					<p class="subtext">What if we have 100 blog posts? We don't want to create 100 files. We use <strong>Dynamic Routes</strong> by using brackets in the file name: <code>[id].tsx</code>.</p>
+					<div style="display: flex; gap: 20px; align-items: center;">
+						<div style="flex: 1; text-align: left; font-size: 0.7em;">
+							<strong>File Structure:</strong>
+							<p>Create a folder named <code>post</code> inside <code>pages</code>. Inside it, create <code>[id].tsx</code>.</p>
+						</div>
+						<div style="flex: 1;">
+							<pre><code class="language-text" data-trim>
+pages/
+├── index.tsx
+├── about.tsx
+└── post/
+    └── [id].tsx  <-- The dynamic segment
+							</code></pre>
+						</div>
+					</div>
+					<div class="info-box">
+						Any URL like <code>/post/hello-world</code> or <code>/post/123</code> will automatically be routed to this <code>[id].tsx</code> file!
 					</div>
 				</section>
 
 				<section>
-					<h2 class="accent">Questions?</h2>
-					<p>Your journey into the NextJS architecture has officially begun.</p>
-					<p class="subtext" style="margin-top: 50px;">Next Session: Database Systems & The T3 Stack Backend.</p>
+					<div class="step-badge">Step 9</div>
+					<h2>Reading Dynamic Parameters</h2>
+					<p class="subtext">Inside <code>[id].tsx</code>, we use the <code>useRouter</code> hook to read the URL parameter.</p>
+					<pre><code class="language-tsx" data-trim data-line-numbers="2,5-6,11">
+// pages/post/[id].tsx
+import { useRouter } from 'next/router';
+
+export default function BlogPost() {
+  const router = useRouter();
+  const { id } = router.query; // 'id' matches the filename [id].tsx
+
+  return (
+    <div>
+      <p>You are reading:</p>
+      <h1 style={{ color: '#61dafb' }}>{id}</h1>
+      <p>This page was generated dynamically based on the URL!</p>
+    </div>
+  )
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<div class="step-badge">Step 10</div>
+					<h2>Adding Component Styles</h2>
+					<p class="subtext">Let's add some scoped styling to our dynamic post using CSS Modules. Rename <code>styles/Home.module.css</code> to <code>Post.module.css</code>.</p>
+					<div style="display: flex; gap: 10px;">
+						<div style="flex: 1;">
+							<pre><code class="language-css" data-trim>
+/* styles/Post.module.css */
+.postContainer {
+  border: 1px solid #444;
+  padding: 20px;
+  border-radius: 8px;
+  background: #111;
+}
+.title {
+  color: #e24a8d;
+  text-transform: capitalize;
+}
+							</code></pre>
+						</div>
+						<div style="flex: 1;">
+							<pre><code class="language-tsx" data-trim data-line-numbers="3,9,11">
+// pages/post/[id].tsx
+import { useRouter } from 'next/router';
+import styles from '@/styles/Post.module.css';
+
+export default function BlogPost() {
+  const router = useRouter();
+  const { id } = router.query;
+  return (
+    <div className={styles.postContainer}>
+      <p>You are reading:</p>
+      <h1 className={styles.title}>{id}</h1>
+    </div>
+  )
+}
+							</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<div class="step-badge">Step 11</div>
+					<h2>Run and Test!</h2>
+					<p class="subtext">Your application is complete. Let's boot it up.</p>
+					<pre><code class="language-bash" data-trim>
+# Start the development server
+yarn dev
+					</code></pre>
+					<div class="info-box" style="border-left-color: #50fa7b;">
+						<strong>Testing Checklist:</strong>
+						<ol>
+							<li>Navigate to <code>http://localhost:3000</code>. Do you see the Home page?</li>
+							<li>Click "About". Does the page change instantly without the browser refreshing?</li>
+							<li>Click "Learning NextJS" or manually type <code>http://localhost:3000/post/my-custom-url</code>. Does the dynamic route capture the ID and display the custom styles?</li>
+						</ol>
+					</div>
+				</section>
+
+				<section>
+					<h2 class="accent">Chapter 1 Complete</h2>
+					<p class="subtext">You have successfully applied the core principles:</p>
+					<ul>
+						<li>Bootstrapped a NextJS environment.</li>
+						<li>Navigated the Pages directory file-system routing.</li>
+						<li>Implemented the <code>useRouter</code> hook for dynamic paths.</li>
+						<li>Utilized <code>_app.tsx</code> for global layouts and CSS Modules for scoped styles.</li>
+					</ul>
+					<h4 style="margin-top: 40px; color: #50fa7b;">Great job. See you in Chapter 2.</h4>
 				</section>
 
 			</div>
