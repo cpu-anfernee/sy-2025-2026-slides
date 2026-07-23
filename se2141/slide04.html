@@ -36,6 +36,28 @@
 				</section>
 
 				<section>
+					<div>
+						<center>
+							<img src="assets/instructor-table.png" alt="Instructor Table">
+						</center>
+					</div>
+				</section>
+
+				<section>
+					<div>
+						<center>
+							<img src="assets/course-table.png" style="max-height: 50vh;" alt="Course Table">
+							<img src="assets/prereq-table.png" style="max-height: 30vh;" alt="Prereq Table">
+						</center>
+					</div>
+				</section>
+
+				<section>
+					<h3>Worth noting is that: </h3>
+					<p class="text-smaller">The order in which tuples appear in a relation is irrelevant, since a relation is a set of types.</p>
+				</section>
+
+				<section>
 					<h3>Domains and Atomicity</h3>
 					<p class="text-smaller">Every attribute has a permitted set of values, called the <strong>domain</strong> of that attribute.</p>
 					<ul>
@@ -67,6 +89,29 @@
 				</section>
 
 				<section>
+					<h3>Example of a schema:</h3>
+					<center>
+						<img src="assets/department-table.png" style="max-height: 40vh;" alt="Department Table">
+					</center>
+					<p>The schema for this table is: </p>
+					<center><em>department(dept_name, building, budget)</em></center>
+				</section>
+
+				<section>
+					<section>
+						<center>
+							<img src="assets/section-table.png" style="max-height: 45vh;" alt="Section Table">
+							<img src="assets/teaches-table.png" style="max-height: 40vh;" alt="Section Table">
+						</center>
+					</section>
+					<section>
+						<center>
+							<img src="assets/instructor-table.png" style="max-height: 60vh;" alt="Instructor Table">
+						</center>
+					</section>
+				</section>
+
+				<section>
 					<h3>2.3 Keys: Identifying Tuples</h3>
 					<p class="text-smaller">To distinguish one tuple from another, we use keys. No two tuples in a relation are allowed to have exactly the same values for all attributes.</p>
 					<ul>
@@ -89,6 +134,12 @@
 				</section>
 
 				<section>
+					<h3>Key Conventions</h3>
+					<p class="text-smaller">We usually write the primary key attributes of a relation schema before the other attributes. And we underline them as well.</p>
+					<p><em>classroom(<u>building</u>, <u>room_number</u>, capacity)</em></p>
+				</section>
+
+				<section>
 					<h3>Foreign Keys & Referential Integrity</h3>
 					<p class="text-smaller">Relations don't exist in isolation. They refer to each other.</p>
 					<ul>
@@ -96,6 +147,24 @@
 						<li class="fragment"><strong>Referential Integrity Constraint:</strong> A rule stating that a value appearing in a foreign key MUST also exist as a primary key in the referenced table.</li>
 						<li class="fragment">Example: An instructor belongs to a <code>dept_name</code>. That <code>dept_name</code> MUST exist in the <code>department</code> table. You cannot assign a teacher to a ghost department!</li>
 					</ul>
+				</section>
+
+				<section>
+					<section>
+						<center>
+							<img src="assets/department-table.png" style="max-height: 40vh;" alt="Department Table">
+						</center>
+						<p>The schema for this table is: </p>
+						<center><em>department(<u>dept_name</u>, building, budget)</em></center>
+					</section>
+					<section>
+						<center>
+							<img src="assets/instructor-table.png" style="max-height: 60vh;" alt="Instructor Table">
+						</center>
+						<p>The schema for this table is: </p>
+						<center><em>instructor(<u>ID</u>, name, dept_name, salary)</em></center>
+						<p class="text-smaller"><em>dept_name</em> is a foreign key.</p>
+					</section>
 				</section>
 
 				<section>
@@ -120,6 +189,9 @@
 
 				<section>
 					<h3>Visualizing the University Schema</h3>
+					<center>
+						<img src="assets/schema-diagram-university.png" style="max-height: 60vh;" alt="University Database Schema">
+					</center>
 					<p class="text-smaller fragment">Notice how arrows enforce logical dependency. If you drop the <code>department</code> table, the <code>instructor</code> table is suddenly left with broken foreign key arrows pointing to nowhere (orphan records).</p>
 				</section>
 

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Fullstack React with TypeScript - Introduction</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/black.css">
+
+		<link rel="stylesheet" href="../dist/plugin/highlight/monokai.css">
+		
+        <link rel="stylesheet" href="index.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section>
+					<h3 style="color: var(--text-muted); font-size: 1em;">Book Summary</h3>
+					<h1>Fullstack <span class="accent-react">React</span> with <span class="accent-ts">TypeScript</span></h1>
+					<p class="subtext" style="margin-top: 30px;">Introduction, Basics, and Necessary Cautions.</p>
+				</section>
+
+				<section>
+					<h2>What is <span class="accent-ts">TypeScript</span>?</h2>
+					<div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin-top: 30px;">
+                        <div style="width: 80vw;">
+							<pre><code class="language-typescript" data-trim data-line-numbers="1-4|6-9">
+// Specifying that 'password' MUST be a string
+function validatePasswordLength(password: string) {
+  return password.length >= 8;
+}
+
+// Error caught in editor!
+validatePasswordLength(123456789); 
+// Argument of type '123456789' is not 
+// assignable to parameter of type 'string'.
+							</code></pre>
+						</div>
+						<div class="paragraph">
+							<ul>
+								<li class="fragment">TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.</li>
+								<li class="fragment">It allows you to specify types for values, enabling you to develop with more confidence.</li>
+								<li class="fragment">TypeScript tells you if you have an error just by analyzing the syntax, meaning you don't even have to run your program.</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h2>Defining Custom Types</h2>
+					<p class="subtext">Going beyond built-in types like strings and numbers.</p>
+					<ul>
+						<li>You can define custom shapes for your objects to ensure functions receive the correct input.</li>
+						<li>Functions will only accept objects that match the explicitly defined type (e.g., a <code>User</code> type).</li>
+					</ul>
+					<pre><code class="language-typescript" data-trim data-line-numbers="1-4|6-8">
+type User = {
+  firstName: string;
+  lastName: string;
+};
+
+function greet(user: User) {
+  return `Hello ${user.firstName} ${user.lastName}`;
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Benefits of Using TypeScript</h2>
+					<ul>
+						<li><strong class="accent-ts">Preventing errors:</strong> It provides clear contracts of communication between parts of your program. Research shows typed languages yield 15% fewer bugs.</li>
+						<li><strong class="accent-ts">Rock-solid stability:</strong> When combined with unit tests, pre-release bug density can be reduced by 40% to 90%.</li>
+						<li><strong class="accent-ts">Better Developer Experience:</strong> Provides better code suggestions in your editor, making it easier to navigate unfamiliar codebases.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Why TS with <span class="accent-react">React</span>?</h2>
+					<p class="subtext">Enhancing component-based architecture.</p>
+					<ul>
+						<li>React allows passing information and callbacks down the component tree.</li>
+						<li>TypeScript defines the interfaces of your components to ensure they only receive props with the correct types.</li>
+						<li><strong>Why not just use prop-types?</strong>
+							<ul>
+								<li>TypeScript spots errors in your editor without running the app.</li>
+								<li>It can provide types for standard functions and classes outside of React.</li>
+								<li>It is fundamentally more powerful in defining complex type information.</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2 style="color: #ff5555;">A Necessary Word Of Caution</h2>
+					<div class="info-box" style="border-left-color: #ff5555;">
+						<strong>Type Checking != Runtime Safety</strong>
+						<p style="margin-top: 10px;">TypeScript does not catch run-time type errors. You can write code that passes the type checker but throws an error upon execution.</p>
+					</div>
+					<ul>
+						<li>If you declare an array as <code>Array&lt;string | number&gt;</code> and pass it strings, it passes the type check.</li>
+						<li>If a number slips in and you run a string method like <code>toLowerCase()</code> on it, your app will crash.</li>
+						<li>You must be extra careful with data obtained through network requests or loaded from the file system, as their true runtime shape can differ from your types.</li>
+					</ul>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../dist/plugin/highlight.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: 'c/t',
+				transition: 'slide',
+				plugins: [ RevealHighlight ]
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,130 @@
+/* ==========================================================================
+   SE 2144: Web Development - Reveal.js Custom Theme
+   Tech Stack: NextJS, React, TypeScript, Tailwind
+   ========================================================================== */
+
+:root {
+  /* Core Tech Colors */
+  --react-cyan: #61dafb;
+  --next-cyan: #38bdf8;
+  --next-accent: #ec4899;
+  --next-dark: #1e293b;
+  --ts-blue: #3178c6;
+  
+  /* Typography Colors */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  /* Status Colors */
+  --danger: #ff5555;
+  --success: #50fa7b;
+  --warning: #ffb86c;
+}
+
+/* ==========================================================================
+   Typography & Base Overrides
+   ========================================================================== */
+
+.reveal h1, 
+.reveal h2, 
+.reveal h3, 
+.reveal h4 { 
+  color: var(--text-main); 
+  font-weight: bold; 
+}
+
+.reveal ul { 
+  font-size: 0.75em; 
+}
+
+.reveal li { 
+  margin-bottom: 15px; 
+}
+
+/* ==========================================================================
+   Code Blocks
+   ========================================================================== */
+
+.reveal pre { 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); 
+  border-radius: 8px; 
+  font-size: 0.55em; 
+}
+
+.reveal .hljs { 
+  background: #1e1e1e; 
+  border-radius: 8px; 
+  padding: 20px; 
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+/* Text Colors */
+.reveal .accent { color: var(--next-cyan); }
+.reveal .accent-alt { color: var(--next-accent); }
+.reveal .accent-ts { color: var(--ts-blue); }
+.reveal .accent-react { color: var(--react-cyan); }
+
+/* Typography */
+.reveal .subtext { 
+  font-size: 0.6em; 
+  color: var(--text-muted); 
+  line-height: 1.4; 
+}
+
+.reveal .quote { 
+  font-style: italic; 
+  color: #888; 
+}
+
+.reveal .citation { 
+  font-size: 0.4em; 
+  color: #555; 
+  vertical-align: super; 
+}
+
+/* ==========================================================================
+   Custom Components
+   ========================================================================== */
+
+/* Step Badges for Tutorials */
+.reveal .step-badge { 
+  display: inline-block; 
+  background: var(--next-cyan); 
+  color: #0f172a; 
+  padding: 5px 15px; 
+  border-radius: 20px; 
+  font-size: 0.4em; 
+  font-weight: bold;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-bottom: 20px;
+}
+
+/* Reusable Callout / Info Boxes */
+.reveal .info-box,
+.reveal .highlight-box,
+.reveal .important-box,
+.reveal .callout {
+  background: rgba(30, 41, 59, 0.8);
+  border-left: 5px solid var(--next-cyan); /* Default border color */
+  padding: 20px;
+  font-size: 0.7em;
+  text-align: left;
+  margin-top: 20px;
+  border-radius: 4px;
+}
+
+/* Callout Box Modifiers */
+.reveal .info-box.ts-box { border-left-color: var(--ts-blue); }
+.reveal .info-box.react-box { border-left-color: var(--react-cyan); }
+.reveal .info-box.danger-box { 
+  border-left-color: var(--danger); 
+  background: rgba(255, 85, 85, 0.1); 
+}
+.reveal .info-box.success-box { 
+  border-left-color: var(--success); 
+  background: rgba(80, 250, 123, 0.1); 
+}

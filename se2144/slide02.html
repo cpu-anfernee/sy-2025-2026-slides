@@ -79,14 +79,14 @@
 					<h2>Environment & Init</h2>
 					<p class="subtext">First, open your terminal. Navigate to your desired workspace folder and run the <code>create-next-app</code> command. We will use the traditional Pages router for this exercise.</p>
 					
-					<pre><code class="language-bash" data-trim>
+					<pre><code class="language-bash" style="font-size: smaller;" data-trim>
 # Initialize a new Next.js project named "my-portfolio"
 yarn create next-app my-portfolio
 
 # The CLI will ask you some questions. 
 # For this Chapter 1 tutorial, answer as follows:
 ? Would you like to use ESLint? › Yes
-? Would you like to use Tailwind CSS? › No (We will use CSS Modules)
+? Would you like to use Tailwind CSS? › Yes
 ? Would you like to use `src/` directory? › No
 ? Would you like to use App Router? › No (Use Pages Router)
 ? Would you like to customize the default import alias? › No
@@ -96,14 +96,14 @@ yarn create next-app my-portfolio
 
 				<section>
 					<div class="step-badge">Step 2</div>
-					<h2>Cleaning the Boilerplate</h2>
-					<p class="subtext">NextJS gives us a lot of placeholder code. Let's start fresh to understand how everything connects.</p>
+					<h2>Tailwind Configuration</h2>
+					<p class="subtext">Because we selected "Yes", Next.js automatically generated <code>tailwind.config.js</code> and <code>postcss.config.js</code>. It also pre-populated our global CSS.</p>
 					<div style="display: flex; gap: 20px; align-items: center;">
 						<div style="flex: 1; text-align: left; font-size: 0.7em;">
 							<strong>Actions:</strong>
 							<ol>
 								<li>Go to <code>pages/index.tsx</code> and delete everything inside.</li>
-								<li>Go to <code>styles/Home.module.css</code> and clear it out.</li>
+								<li>Open <code>styles/globals.css</code>. Keep the top Tailwind directive, but delete the rest of the boilerplate CSS below it.</li>
 								<li>Delete the <code>pages/api</code> folder (we don't need backend routes yet).</li>
 							</ol>
 						</div>
@@ -116,8 +116,7 @@ my-portfolio/
 │   └── index.tsx (cleared)
 ├── public/
 ├── styles/
-│   ├── globals.css
-│   └── Home.module.css (cleared)
+│   └── globals.css
 └── package.json
 							</code></pre>
 						</div>
@@ -128,14 +127,14 @@ my-portfolio/
 					<div class="step-badge">Step 3</div>
 					<h2>The Global Wrapper</h2>
 					<p class="subtext">Let's look at <code>pages/_app.tsx</code>. This is the root component that wraps <strong>every</strong> page in your application. It's where you import global CSS.</p>
-					<pre><code class="language-tsx" data-trim data-line-numbers="1-2|4-8">
+					<pre><code style="font-size: smaller;" class="language-tsx" data-trim data-line-numbers="2|3|5-8">
 // pages/_app.tsx
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import &#x27;@/styles/globals.css&#x27;
+import type { AppProps } from &#x27;next/app&#x27;
 
 export default function App({ Component, pageProps }: AppProps) {
-  // 'Component' is the active page (e.g., index.tsx, about.tsx)
-  return <Component {...pageProps} />
+  // &#x27;Component&#x27; is the active page (e.g., index.tsx, about.tsx)
+  return &#x3C;Component {...pageProps} /&#x3E;
 }
 					</code></pre>
 					<div class="info-box">
@@ -147,53 +146,51 @@ export default function App({ Component, pageProps }: AppProps) {
 					<div class="step-badge">Step 4</div>
 					<h2>Building a Reusable Layout</h2>
 					<p class="subtext">Let's create a standard navigation bar that appears on every page. Create a new folder named <code>components/</code> in the root, and add <code>Layout.tsx</code>.</p>
-					<pre><code class="language-tsx" data-trim data-line-numbers="1-2|4-8|10-21">
+					<pre><code style="font-size: smaller;" class="language-tsx" data-trim data-line-numbers>
 // components/Layout.tsx
-import Link from "next/link";
-import { ReactNode } from "react";
+import Link from &#x27;next/link&#x27;;
+import { ReactNode } from &#x27;react&#x27;;
 
-// Define the expected props
 interface LayoutProps {
-	children: ReactNode;
+  children: ReactNode;
 }
 
-const Layout = ({ children }: LayoutProps) => (
-	<div className="layout-container">
-		<nav style={{ padding: "20px", background: "#333", color: "white" }}>
-			<Link href="/" style={{ marginRight: "15px" }}>
-				Home
-			</Link>
-			<Link href="/about">About</Link>
-		</nav>
-		{/* The actual page content is injected here */}
-		<main style={{ padding: "20px" }}>{children}</main>
-	</div>
-);
-
-export default Layout;
+export default function Layout({ children }: LayoutProps) {
+  return (
+    &#x3C;div className=&#x22;min-h-screen bg-slate-900 text-slate-100 font-sans&#x22;&#x3E;
+      &#x3C;nav className=&#x22;p-6 bg-slate-950 border-b border-slate-800 flex gap-6&#x22;&#x3E;
+        &#x3C;Link href=&#x22;/&#x22; className=&#x22;hover:text-sky-400 transition-colors font-semibold&#x22;&#x3E;Home&#x3C;/Link&#x3E;
+        &#x3C;Link href=&#x22;/about&#x22; className=&#x22;hover:text-sky-400 transition-colors font-semibold&#x22;&#x3E;About&#x3C;/Link&#x3E;
+      &#x3C;/nav&#x3E;
+      {/* The actual page content is injected here */}
+      &#x3C;main className=&#x22;max-w-4xl mx-auto p-8&#x22;&#x3E;{children}&#x3C;/main&#x3E;
+    &#x3C;/div&#x3E;
+  );
+}
 					</code></pre>
 				</section>
 
 				<section>
 					<div class="step-badge">Step 5</div>
-					<h2>Applying the Layout & next/link</h2>
-					<p class="subtext">Notice the use of <code>&lt;Link&gt;</code> in the previous slide? This is NextJS's built-in client-side router component.</p>
-					<ul>
+					<h5>Applying the Layout & next/link</h2>
+					<p class="subtext" style="font-size: x-large;">Notice the use of <code>&lt;Link&gt;</code> in the previous slide? This is NextJS's built-in client-side router component.</p>
+					<ul style="font-size: large;">
 						<li>Instead of <code>&lt;a href="/about"&gt;</code>, we use <code>&lt;Link href="/about"&gt;</code>.</li>
 						<li><strong>Why?</strong> It prevents the browser from doing a full page refresh. It fetches the JavaScript for the new page instantly.</li>
 					</ul>
 					<br>
 					<p class="subtext" style="margin-top: 10px;">To apply our Layout globally, let's update <code>_app.tsx</code>:</p>
-					<pre><code class="language-tsx" data-trim data-line-numbers="2,6,8">
-import '@/styles/globals.css'
-import Layout from '@/components/Layout'
-import type { AppProps } from 'next/app'
+					<pre><code class="language-tsx" data-trim data-line-numbers="3|8-10">
+// pages/_app.tsx
+import &#x27;@/styles/globals.css&#x27;
+import Layout from &#x27;@/components/Layout&#x27;
+import type { AppProps } from &#x27;next/app&#x27;
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    &#x3C;Layout&#x3E;
+      &#x3C;Component {...pageProps} /&#x3E;
+    &#x3C;/Layout&#x3E;
   )
 }
 					</code></pre>
@@ -203,22 +200,24 @@ export default function App({ Component, pageProps }: AppProps) {
 					<div class="step-badge">Step 6</div>
 					<h2>The Home Page (Static Route)</h2>
 					<p class="subtext">Now let's rebuild our landing page. Because it is named <code>index.tsx</code> inside the <code>pages/</code> directory, NextJS maps it to the root URL (<code>/</code>).</p>
-					<pre><code class="language-tsx" data-trim data-line-numbers="1,4-14">
+					<pre><code class="language-tsx" data-trim data-line-numbers>
 // pages/index.tsx
-import Link from 'next/link';
+import Link from &#x27;next/link&#x27;;
 
 export default function Home() {
   return (
-    <div>
-      <h1>Welcome to My Portfolio</h1>
-      <p>I am a web developer learning NextJS.</p>
+    &#x3C;div className=&#x22;space-y-6&#x22;&#x3E;
+      &#x3C;h1 className=&#x22;text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-pink-500&#x22;&#x3E;Welcome to My Portfolio&#x3C;/h1&#x3E;
+      &#x3C;p className=&#x22;text-slate-400 text-lg&#x22;&#x3E;I am a web developer learning NextJS &#x26; Tailwind.&#x3C;/p&#x3E;
       
-      <h3>Recent Posts</h3>
-      <ul>
-        <li><Link href="/post/learning-nextjs">Learning NextJS</Link></li>
-        <li><Link href="/post/routing-is-fun">Routing is Fun</Link></li>
-      </ul>
-    </div>
+      &#x3C;div className=&#x22;mt-12 bg-slate-800/50 p-6 rounded-xl border border-slate-700&#x22;&#x3E;
+        &#x3C;h3 className=&#x22;text-xl font-bold mb-4&#x22;&#x3E;Recent Posts&#x3C;/h3&#x3E;
+        &#x3C;ul className=&#x22;list-disc list-inside space-y-2 text-sky-400&#x22;&#x3E;
+          &#x3C;li&#x3E;&#x3C;Link href=&#x22;/post/learning-nextjs&#x22; className=&#x22;hover:underline&#x22;&#x3E;Learning NextJS&#x3C;/Link&#x3E;&#x3C;/li&#x3E;
+          &#x3C;li&#x3E;&#x3C;Link href=&#x22;/post/routing-is-fun&#x22; className=&#x22;hover:underline&#x22;&#x3E;Routing is Fun&#x3C;/Link&#x3E;&#x3C;/li&#x3E;
+        &#x3C;/ul&#x3E;
+      &#x3C;/div&#x3E;
+    &#x3C;/div&#x3E;
   )
 }
 					</code></pre>
@@ -228,18 +227,18 @@ export default function Home() {
 					<div class="step-badge">Step 7</div>
 					<h2>The About Page (Static Route)</h2>
 					<p class="subtext">To create an <code>/about</code> URL, we simply create an <code>about.tsx</code> file inside the <code>pages/</code> folder. The file system <em>is</em> the API.</p>
-					<pre><code class="language-tsx" data-trim>
+					<pre><code class="language-tsx" data-trim data-line-numbers>
 // pages/about.tsx
 
 export default function About() {
   return (
-    <div>
-      <h1>About Me</h1>
-      <p>
+    &#x3C;div className=&#x22;max-w-2xl&#x22;&#x3E;
+      &#x3C;h1 className=&#x22;text-3xl font-bold mb-4 border-b-2 border-sky-500 pb-2 inline-block&#x22;&#x3E;About Me&#x3C;/h1&#x3E;
+      &#x3C;p className=&#x22;text-slate-300 leading-relaxed text-lg&#x22;&#x3E;
         I am an SE 2144 student currently mastering the T3 stack. 
-        Next.js makes building React applications incredibly fast.
-      </p>
-    </div>
+        Next.js combined with &#x3C;span className=&#x22;text-sky-400 font-semibold&#x22;&#x3E;Tailwind CSS&#x3C;/span&#x3E; makes building React applications incredibly fast and enjoyable.
+      &#x3C;/p&#x3E;
+    &#x3C;/div&#x3E;
   )
 }
 					</code></pre>
@@ -273,20 +272,20 @@ pages/
 					<div class="step-badge">Step 9</div>
 					<h2>Reading Dynamic Parameters</h2>
 					<p class="subtext">Inside <code>[id].tsx</code>, we use the <code>useRouter</code> hook to read the URL parameter.</p>
-					<pre><code class="language-tsx" data-trim data-line-numbers="2,5-6,11">
+					<pre><code class="language-tsx" data-trim data-line-numbers="2,5|6|11|">
 // pages/post/[id].tsx
-import { useRouter } from 'next/router';
+import { useRouter } from &#x27;next/router&#x27;;
 
 export default function BlogPost() {
   const router = useRouter();
-  const { id } = router.query; // 'id' matches the filename [id].tsx
+  const { id } = router.query; 
 
   return (
-    <div>
-      <p>You are reading:</p>
-      <h1 style={{ color: '#61dafb' }}>{id}</h1>
-      <p>This page was generated dynamically based on the URL!</p>
-    </div>
+    &#x3C;div className=&#x22;mt-10 p-8 rounded-2xl bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 shadow-xl&#x22;&#x3E;
+      &#x3C;span className=&#x22;text-xs font-bold tracking-widest uppercase text-slate-400&#x22;&#x3E;Current Path ID:&#x3C;/span&#x3E;
+      &#x3C;h1 className=&#x22;text-5xl font-black text-pink-500 capitalize mt-2 mb-6&#x22;&#x3E;{id}&#x3C;/h1&#x3E;
+      &#x3C;p className=&#x22;text-slate-300&#x22;&#x3E;This page was generated dynamically based on the URL parameter.&#x3C;/p&#x3E;
+    &#x3C;/div&#x3E;
   )
 }
 					</code></pre>
@@ -294,47 +293,6 @@ export default function BlogPost() {
 
 				<section>
 					<div class="step-badge">Step 10</div>
-					<h2>Adding Component Styles</h2>
-					<p class="subtext">Let's add some scoped styling to our dynamic post using CSS Modules. Rename <code>styles/Home.module.css</code> to <code>Post.module.css</code>.</p>
-					<div style="display: flex; gap: 10px;">
-						<div style="flex: 1;">
-							<pre><code class="language-css" data-trim>
-/* styles/Post.module.css */
-.postContainer {
-  border: 1px solid #444;
-  padding: 20px;
-  border-radius: 8px;
-  background: #111;
-}
-.title {
-  color: #e24a8d;
-  text-transform: capitalize;
-}
-							</code></pre>
-						</div>
-						<div style="flex: 1;">
-							<pre><code class="language-tsx" data-trim data-line-numbers="3,9,11">
-// pages/post/[id].tsx
-import { useRouter } from 'next/router';
-import styles from '@/styles/Post.module.css';
-
-export default function BlogPost() {
-  const router = useRouter();
-  const { id } = router.query;
-  return (
-    <div className={styles.postContainer}>
-      <p>You are reading:</p>
-      <h1 className={styles.title}>{id}</h1>
-    </div>
-  )
-}
-							</code></pre>
-						</div>
-					</div>
-				</section>
-
-				<section>
-					<div class="step-badge">Step 11</div>
 					<h2>Run and Test!</h2>
 					<p class="subtext">Your application is complete. Let's boot it up.</p>
 					<pre><code class="language-bash" data-trim>
