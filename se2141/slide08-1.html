@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SE 2141: Chapter 7.1 - Relational Database Design</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/dracula.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../dist/plugin/highlight/monokai.css">
+		
+		<!-- Custom slide styling -->
+		<link rel="stylesheet" href="index.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- Slide 1: Title -->
+				<section>
+					<h2 style="font-size: 1.4em;">Chapter 7: Relational Database Design</h2>
+					<h3 style="color: #bd93f9; font-size: 1.1em;">Subchapter 7.1: Features of Good Relational Designs</h3>
+					<div style="margin-top: 40px; font-size: 0.75em; color: #6272a4;">
+						<p>SE 2141 Database Systems</p>
+					</div>
+				</section>
+
+				<!-- Slide 2: Intro to Relational Schema Design -->
+				<section>
+					<h3>Conceptual vs. Relational Design</h3>
+					<p class="text-smaller">In Chapter 6, we designed conceptual models using E-R diagrams, which provided an excellent starting point for creating a relational database design.</p>
+					<ul>
+						<li class="fragment">The goal of relational database design is to generate a set of relation schemas that allows us to store information without unnecessary redundancy, yet also allows us to retrieve information easily.</li>
+						<li class="fragment">This is accomplished by designing schemas that are in an appropriate normal form.</li>
+						<li class="fragment">While some necessary information exists in a well-designed E-R diagram, additional information about the enterprise may be needed to determine if a schema is in a desirable normal form.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 3: Pitfalls of Bad Design -->
+				<section>
+					<h3>The Pitfalls of a Bad Schema</h3>
+					<p class="text-smaller">Suppose we combined instructor and department into one schema: <code>in_dep (ID, name, salary, dept_name, building, budget)</code>.</p>
+					<ul>
+						<li class="fragment"><strong>Redundancy:</strong> We have to repeat the department information (building and budget) once for each instructor in the department.</li>
+						<li class="fragment"><strong>Inconsistency Risk:</strong> If a user updates the budget amount in one tuple but not all, the database becomes inconsistent.</li>
+						<li class="fragment"><strong>Insertion Anomalies:</strong> We cannot directly represent information concerning a newly created department unless that department has at least one instructor, or we resort to using troublesome null values.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 4: Decomposition -->
+				<section>
+					<h3>Decomposition</h3>
+					<p class="text-smaller">The only way to avoid the repetition-of-information problem in a schema like <code>in_dep</code> is to decompose it into several smaller schemas.</p>
+					<ul>
+						<li class="fragment">However, not all decompositions of schemas are helpful.</li>
+						<li class="fragment">For example, decomposing an <code>employee</code> schema into <code>employee1 (ID, name)</code> and <code>employee2 (name, street, city, salary)</code> is flawed if two employees have the same name.</li>
+						<li class="fragment">Rejoining these flawed tables will mix data values incorrectly, causing us to lose information about which exact street and salary pertain to which employee.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 6: Lossless vs Lossy Decomposition -->
+				<section>
+					<h3>Lossless vs. Lossy Decomposition</h3>
+					<p class="text-smaller">We must insist that all schema decompositions are lossless.</p>
+					<ul>
+						<li class="fragment"><strong>Lossless Decomposition:</strong> A decomposition where replacing relation $R$ with $R_1$ and $R_2$ results in no loss of information.</li>
+						<li class="fragment">Formally, projecting a relation $r$ onto $R_1$ and $R_2$, and computing their natural join, gets back exactly $r$ ($\Pi_{R_1}(r) \bowtie \Pi_{R_2}(r) = r$).</li>
+						<li class="fragment"><strong>Lossy Decomposition:</strong> A decomposition where computing the natural join of the projections yields a proper superset of the original relation ($r \subset \Pi_{R_1}(r) \bowtie \Pi_{R_2}(r)$).</li>
+						<li class="fragment">In a lossy decomposition, having more tuples actually means we have <em>less</em> information, because we are unable to represent the absence of a connection between specific attributes.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 7: Normalization Theory -->
+				<section>
+					<h3>Normalization Theory</h3>
+					<p class="text-smaller">Normalization is the general methodology for deriving a set of schemas that do not suffer from the repetition-of-information problem.</p>
+					<ul>
+						<li class="fragment">First, we decide if a given relation schema is in "good form," known as a normal form.</li>
+						<li class="fragment">If it is not in good form, we decompose it into a number of smaller relation schemas, each of which is in an appropriate normal form.</li>
+						<li class="fragment">This decomposition must be a lossless decomposition.</li>
+						<li class="fragment">We use functional dependencies to determine whether a relation schema is in one of the desirable normal forms.</li>
+					</ul>
+				</section>
+				<!-- Slide 1: Title -->
+				<section>
+					<h2 style="font-size: 1.4em;">Chapter 7: Relational Database Design</h2>
+					<h3 style="color: #bd93f9; font-size: 1.1em;">Subchapter 7.2: Decomposition Using Functional Dependencies</h3>
+					<div style="margin-top: 40px; font-size: 0.75em; color: #6272a4;">
+						<p>SE 2141 Database Systems</p>
+					</div>
+				</section>
+
+				<!-- Slide 2: Real-World Constraints -->
+				<section>
+					<h3>Real-World Constraints</h3>
+					<p class="text-smaller">A database models a set of entities and relationships that follow rules in the real world.</p>
+					<ul>
+						<li class="fragment">For example, in a university database:
+							<ul>
+								<li>Students and instructors are uniquely identified by their ID.</li>
+								<li>Each department has only one value for its budget, and only one associated building.</li>
+							</ul>
+						</li>
+						<li class="fragment">An instance of a relation that satisfies all such constraints is called a <strong>legal instance</strong>.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 3: Functional Dependencies Intro -->
+				<section>
+					<h3>Functional Dependencies ($\alpha \rightarrow \beta$)</h3>
+					<p class="text-smaller">While a superkey uniquely identifies an <em>entire</em> tuple, a functional dependency uniquely identifies the values of <em>certain</em> attributes.</p>
+					<ul>
+						<li class="fragment">An instance satisfies $\alpha \rightarrow \beta$ if for all pairs of tuples $t_1$ and $t_2$ where $t_1[\alpha] = t_2[\alpha]$, it is also true that $t_1[\beta] = t_2[\beta]$.</li>
+						<li class="fragment"><strong>Meaning:</strong> If two rows have the same value for column $\alpha$, they MUST have the same value for column $\beta$.</li>
+						<li class="fragment">A functional dependency holds on a schema if <em>every</em> legal instance satisfies it.</li>
+					</ul>
+				</section>
+				
+				<!-- Slide 4: Functional Dependencies Example -->
+				<section>
+					<h3>Functional Dependencies: Example</h3>
+					<p class="text-smaller">Consider the <code>in_dep</code> schema:</p>
+					<pre><code class="language-sql">in_dep (ID, name, salary, dept_name, building, budget)</code></pre>
+					<ul>
+						<li class="fragment">The functional dependency <code>dept_name &rarr; budget</code> holds because for each department, there is exactly one unique budget amount.</li>
+						<li class="fragment">If two rows share the same <code>dept_name</code> (e.g., both are 'Comp. Sci.'), they must have the exact same <code>budget</code> value.</li>
+						<li class="fragment"><strong>Trivial Dependencies:</strong> A functional dependency $\alpha \rightarrow \beta$ is trivial if $\beta \subseteq \alpha$. (e.g., <code>A &rarr; A</code> or <code>AB &rarr; A</code>).</li>
+					</ul>
+				</section>
+
+				<!-- Slide 5: Quick Review 1 -->
+				<section>
+					<h3>Quick Review: Checkpoint 1</h3>
+					<p style="color: #50fa7b;">Test your understanding of functional dependencies:</p>
+					<ol>
+						<li class="fragment">In a relation recording employees and their parking spaces, if `employee_id &rarr; parking_spot` holds, what happens if two rows have the same `employee_id`?</li>
+						<li class="fragment">If we are given the attributes `(firstName, lastName, age)`, is the functional dependency `firstName, lastName &rarr; firstName` considered a trivial dependency? Why?</li>
+					</ol>
+				</section>
+
+				<!-- Slide 6: Inference and Closure -->
+				<section>
+					<h3>Inference and Closure ($F^+$)</h3>
+					<p class="text-smaller">If a set of functional dependencies $F$ holds on a relation, we can infer that other functional dependencies must also hold.</p>
+					<ul>
+						<li class="fragment"><strong>Transitivity:</strong> If $A \rightarrow B$ and $B \rightarrow C$ hold, we can infer that $A \rightarrow C$ must also hold.</li>
+						<li class="fragment">We use the notation $F^+$ to denote the <strong>closure</strong> of set $F$.</li>
+						<li class="fragment">$F^+$ is the set of <em>all</em> functional dependencies that can be inferred from $F$, and it contains all the original dependencies in $F$.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 7: Testing for Lossless Decomposition -->
+				<section>
+					<h3>Testing for Lossless Decomposition</h3>
+					<p class="text-smaller">We can use functional dependencies to prove a decomposition is lossless.</p>
+					<ul>
+						<li class="fragment">Let relation $R$ be decomposed into $R_1$ and $R_2$.</li>
+						<li class="fragment">The decomposition is lossless if at least one of these dependencies is in $F^+$:
+							<ul>
+								<li>$R_1 \cap R_2 \rightarrow R_1$</li>
+								<li>$R_1 \cap R_2 \rightarrow R_2$</li>
+							</ul>
+						</li>
+						<li class="fragment"><strong>In plain English:</strong> The attributes shared between the two new tables ($R_1 \cap R_2$) must form a superkey for <em>at least one</em> of the new tables.</li>
+					</ul>
+				</section>
+				
+				<!-- Slide 8: Lossless Decomposition Example -->
+				<section>
+					<h3>Lossless Decomposition: Example</h3>
+					<p class="text-smaller">Decomposing <code>in_dep</code>:</p>
+					<pre><code class="language-sql">instructor (ID, name, dept_name, salary)
+department (dept_name, building, budget)</code></pre>
+					<ul>
+						<li class="fragment">The intersection ($R_1 \cap R_2$) is <code>dept_name</code>.</li>
+						<li class="fragment">Does <code>dept_name &rarr; department</code>? Yes! <code>dept_name &rarr; dept_name, building, budget</code> holds because <code>dept_name</code> is the primary key of <code>department</code>.</li>
+						<li class="fragment">Therefore, this is a lossless decomposition.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 9: Quick Review 2 -->
+				<section>
+					<h3>Quick Review: Checkpoint 2</h3>
+					<p style="color: #50fa7b;">Test your understanding of lossless decompositions:</p>
+					<ol>
+						<li class="fragment">If we know that `course_id &rarr; department` and `department &rarr; building_name`, what dependency can we infer belongs in $F^+$?</li>
+						<li class="fragment">When breaking a table into two new tables, what condition must the shared column(s) meet to guarantee the data can be perfectly rejoined later without losing information?</li>
+					</ol>
+				</section>
+
+				<!-- Slide 1: Title -->
+				<section>
+					<h2 style="font-size: 1.5em;">Chapter 7: Relational Database Design</h2>
+					<h3 style="color: #bd93f9; font-size: 1.1em;">Subchapter 7.3: Normal Forms</h3>
+					<div style="margin-top: 40px; font-size: 0.75em; color: #6272a4;">
+						<p>SE 2141 Database Systems</p>
+					</div>
+				</section>
+
+				<!-- Slide 2: Introduction to Normal Forms -->
+				<section>
+					<h3>The Purpose of Normalization</h3>
+					<p class="text-smaller">Normalization provides a formal framework to evaluate if a relational schema is in "good form" and free of structural anomalies.</p>
+					<ul>
+						<li class="fragment">We use <strong>functional dependencies</strong> to identify if attributes are incorrectly bundled into a single table.</li>
+						<li class="fragment">If a schema violates the rules of a normal form, we decompose it into smaller, compliant tables.</li>
+						<li class="fragment">The two most common and important normal forms in standard database design are <strong>Boyce-Codd Normal Form (BCNF)</strong> and <strong>Third Normal Form (3NF)</strong>.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 3: Boyce-Codd Normal Form (BCNF) -->
+				<section>
+					<h3>7.3.1 Boyce-Codd Normal Form (BCNF)</h3>
+					<p class="text-smaller">BCNF is one of the more desirable normal forms. It eliminates all redundancy that can be discovered based on functional dependencies.</p>
+					<p class="text-smaller">A relation schema $R$ is in BCNF with respect to a set $F$ of functional dependencies if, for all functional dependencies in $F^+$ of the form $\alpha \rightarrow \beta$ (where $\alpha \subseteq R$ and $\beta \subseteq R$), at least one of the following holds:</p>
+					<ul>
+						<li class="fragment">$\alpha \rightarrow \beta$ is a <strong>trivial</strong> functional dependency (i.e., $\beta \subseteq \alpha$).</li>
+						<li class="fragment">$\alpha$ is a <strong>superkey</strong> for schema $R$.</li>
+					</ul>
+					<p class="fragment text-smaller" style="color: #ffb86c; margin-top: 15px;"><strong>In plain English:</strong> "Every non-trivial determinant must be a superkey."</p>
+				</section>
+
+				<!-- Slide 4: BCNF Violation Example -->
+				<section>
+					<h3>BCNF Violation Example</h3>
+					<p class="text-smaller">Consider the combined schema <code>in_dep (ID, name, salary, dept_name, building, budget)</code>.</p>
+					<ul>
+						<li class="fragment">We know that <code>dept_name &rarr; building, budget</code> holds true.</li>
+						<li class="fragment">Is this trivial? <strong>No</strong>, because <code>building, budget</code> is not a subset of <code>dept_name</code>.</li>
+						<li class="fragment">Is <code>dept_name</code> a superkey for <code>in_dep</code>? <strong>No</strong>, because a department name alone cannot uniquely identify an instructor's ID or name.</li>
+						<li class="fragment">Therefore, <code>in_dep</code> <strong>is not</strong> in BCNF and must be decomposed!</li>
+					</ul>
+				</section>
+
+				<!-- Slide 5: Quick Review 1 -->
+				<section>
+					<h3>Quick Review: Checkpoint 1</h3>
+					<p style="color: #50fa7b;">Test your understanding of BCNF:</p>
+					<ol>
+						<li class="fragment">What two conditions can save a functional dependency $\alpha \rightarrow \beta$ from violating Boyce-Codd Normal Form?</li>
+						<li class="fragment">Suppose a relation <code>vehicle (VIN, model, manufacturer, factory_location)</code> has a functional dependency <code>manufacturer &rarr; factory_location</code>. Assuming <code>VIN</code> is the only primary key, does this relation satisfy BCNF? Why or why not?</li>
+					</ol>
+				</section>
+
+				<!-- Slide 6: Dependency Preservation Issue -->
+				<section>
+					<h3>The Limits of BCNF</h3>
+					<p class="text-smaller">While BCNF successfully eliminates redundancy, it has one major drawback: achieving it can sometimes prevent <strong>dependency preservation</strong>.</p>
+					<ul>
+						<li class="fragment">When we decompose a schema, we want to be able to check all our original functional dependencies efficiently.</li>
+						<li class="fragment">If a decomposition forces us to perform a <em>join</em> across multiple tables just to verify a functional dependency during an insert or update, the decomposition is <strong>not dependency-preserving</strong>.</li>
+						<li class="fragment">Because BCNF is so strict, there are some schemas where a lossless, BCNF-compliant decomposition makes it impossible to preserve all dependencies locally.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 7: Third Normal Form (3NF) -->
+				<section>
+					<h3>7.3.2 Third Normal Form (3NF)</h3>
+					<p class="text-smaller">To guarantee that we can always preserve dependencies, we use a slightly relaxed standard called <strong>Third Normal Form (3NF)</strong>.</p>
+					<p class="text-smaller">A relation schema $R$ is in 3NF if, for all functional dependencies $\alpha \rightarrow \beta$ in $F^+$, at least one of the following holds:</p>
+					<ul>
+						<li class="fragment">$\alpha \rightarrow \beta$ is a <strong>trivial</strong> functional dependency.</li>
+						<li class="fragment">$\alpha$ is a <strong>superkey</strong> for schema $R$.</li>
+						<li class="fragment" style="color: #50fa7b;"><strong>[The 3NF Exception]:</strong> Each attribute $A$ in $\beta - \alpha$ is contained in a candidate key for $R$. (These are known as <em>prime attributes</em>).</li>
+					</ul>
+				</section>
+
+				<!-- Slide 8: BCNF vs. 3NF -->
+				<section>
+					<h3>Comparing BCNF and 3NF</h3>
+					<p class="text-smaller">The third condition in 3NF acts as a safety valve. It allows certain functional dependencies to exist even if their left side isn't a superkey, provided the right side is part of a candidate key.</p>
+					<ul>
+						<li class="fragment"><strong>Strictness:</strong> BCNF is strictly stronger than 3NF. Any schema in BCNF is automatically in 3NF.</li>
+						<li class="fragment"><strong>The Trade-off:</strong> 
+							<ul>
+								<li>By using <strong>3NF</strong>, we are always guaranteed a decomposition that is both <em>lossless</em> and <em>dependency-preserving</em>. However, we may retain a small amount of data redundancy.</li>
+								<li>By using <strong>BCNF</strong>, we guarantee zero FD-based redundancy, but we might lose dependency preservation.</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+
+				<!-- Slide 9: Quick Review 2 -->
+				<section>
+					<h3>Quick Review: Checkpoint 2</h3>
+					<p style="color: #50fa7b;">Evaluating Normal Form Trade-offs:</p>
+					<ol>
+						<li class="fragment">What is the "third condition" that 3NF adds which makes it less strict than BCNF?</li>
+						<li class="fragment">If you have to choose between BCNF and 3NF for a database design, why might a database architect explicitly choose to stop at 3NF rather than decomposing all the way to BCNF?</li>
+					</ol>
+				</section>
+
+				<!-- Slide 10: Summary -->
+				<section>
+					<h3>Summary of 7.3</h3>
+					<ol style="font-size: 0.8em;">
+						<li class="fragment"><strong>BCNF:</strong> The gold standard for eliminating redundancy. It demands that for every non-trivial dependency $\alpha \rightarrow \beta$, $\alpha$ must be a superkey.</li>
+						<li class="fragment"><strong>Decomposition Goal:</strong> If a table violates BCNF, we split it using the violating dependency to remove data duplication.</li>
+						<li class="fragment"><strong>3NF:</strong> A slightly relaxed normal form. It allows non-superkey determinants if the determined attribute is part of a candidate key.</li>
+						<li class="fragment"><strong>The Trade-off:</strong> BCNF prevents all FD-based redundancy, but 3NF is sometimes required to ensure all database constraints can be checked efficiently without joining tables (dependency preservation).</li>
+					</ol>
+				</section>
+			</div>
+		</div>
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../dist/plugin/notes.js"></script>
+		<script src="../dist/plugin/markdown.js"></script>
+		<script src="../dist/plugin/highlight.js"></script>
+		<script src="../dist/plugin/zoom.js"></script>
+		<script src="../dist/plugin/math.js"></script>
+		<script>
+			// Initialize reveal.js with all assets mapped to flat dist/plugin root directories
+			Reveal.initialize({
+				hash: true,
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom, RevealMath.MathJax3 ]
+			});
+		</script>
+	</body>
+</html>

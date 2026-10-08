@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SE 2141: Normalization Exercises</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/dracula.css">
+		<link rel="stylesheet" href="../dist/plugin/highlight/monokai.css">
+		<link rel="stylesheet" href="index.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- Title Slide -->
+				<section>
+					<h2 style="font-size: 1.4em;">Database Normalization</h2>
+					<h3 style="color: #bd93f9; font-size: 1.1em;">Exercises (Chapters 7.1 - 7.3)</h3>
+					<div style="margin-top: 40px; font-size: 0.75em; color: #6272a4;">
+						<p>SE 2141 Database Systems</p>
+					</div>
+				</section>
+
+				<!-- Exercise 1: Question -->
+				<section>
+					<h3 style="color: #50fa7b;">Sample 1: Library Loans</h3>
+					<p class="text-smaller">Consider the following schema designed to track current library book loans:</p>
+					<pre><code class="language-sql">Loan(PatronID, BookID, DueDate, PatronName)</code></pre>
+					<p class="text-smaller" style="text-align: left; margin-top: 20px;"><strong>Business Rules:</strong></p>
+					<ul class="text-smaller">
+						<li>A book can only be loaned to one patron at a time, with a specific due date.</li>
+						<li>Each patron has a single registered name.</li>
+					</ul>
+					<div class="fragment" style="margin-top: 30px; border-top: 1px solid #6272a4; padding-top: 15px;">
+						<p class="text-smaller"><strong>Task:</strong> Identify the functional dependencies, determine if the schema is in BCNF, and perform a lossless decomposition if it is not.</p>
+					</div>
+				</section>
+
+				<!-- Exercise 1: Answer -->
+				<section>
+					<h3>Sample 1: Solution</h3>
+					<p class="text-smaller" style="text-align: left; color: #ffb86c;"><strong>Functional Dependencies:</strong></p>
+					<ul class="text-smaller">
+						<li><code>BookID &rarr; PatronID, DueDate</code></li>
+						<li><code>PatronID &rarr; PatronName</code></li>
+					</ul>
+					<p class="text-smaller fragment" style="text-align: left; margin-top: 20px;"><strong>Analysis:</strong> <code>BookID</code> is the primary key. The schema violates BCNF because <code>PatronID &rarr; PatronName</code> is a non-trivial dependency where the determinant (<code>PatronID</code>) is not a superkey.</p>
+					<p class="text-smaller fragment" style="text-align: left; margin-top: 20px; color: #8be9fd;"><strong>Decomposition:</strong></p>
+					<ul class="text-smaller fragment">
+						<li><code>Patron(PatronID, PatronName)</code></li>
+						<li><code>Loan(BookID, PatronID, DueDate)</code></li>
+					</ul>
+				</section>
+
+				<!-- Exercise 2: Question -->
+				<section>
+					<h3 style="color: #50fa7b;">Sample 2: Consulting Assignments</h3>
+					<p class="text-smaller">Consider a schema for assigning consultants to client projects:</p>
+					<pre><code class="language-sql">Assignment(Consultant, Client, ProjectManager)</code></pre>
+					<p class="text-smaller" style="text-align: left; margin-top: 20px;"><strong>Business Rules:</strong></p>
+					<ul class="text-smaller">
+						<li>A consultant works for a specific client under the direction of exactly one project manager.</li>
+						<li>Each project manager is assigned to exactly one client, but can manage multiple consultants.</li>
+					</ul>
+					<div class="fragment" style="margin-top: 30px; border-top: 1px solid #6272a4; padding-top: 15px;">
+						<p class="text-smaller"><strong>Task:</strong> Identify the FDs. Is this schema in 3NF? Is it in BCNF? Decompose to BCNF if it is not.</p>
+					</div>
+				</section>
+
+				<!-- Exercise 2: Answer -->
+				<section>
+					<h3>Sample 2: Solution</h3>
+					<p class="text-smaller" style="text-align: left; color: #ffb86c;"><strong>Functional Dependencies:</strong></p>
+					<ul class="text-smaller">
+						<li><code>Consultant, Client &rarr; ProjectManager</code></li>
+						<li><code>ProjectManager &rarr; Client</code></li>
+					</ul>
+					<p class="text-smaller fragment" style="text-align: left; margin-top: 20px;"><strong>Analysis:</strong> The candidate keys are <code>{Consultant, Client}</code> and <code>{Consultant, ProjectManager}</code>. 
+					<br><br><strong>3NF:</strong> Yes. While <code>ProjectManager</code> is not a superkey, <code>Client</code> is a prime attribute (part of a candidate key).
+					<br><strong>BCNF:</strong> No. <code>ProjectManager &rarr; Client</code> violates BCNF because <code>ProjectManager</code> is not a superkey.</p>
+					<p class="text-smaller fragment" style="text-align: left; margin-top: 20px; color: #8be9fd;"><strong>BCNF Decomposition:</strong></p>
+					<ul class="text-smaller fragment">
+						<li><code>Manager(ProjectManager, Client)</code></li>
+						<li><code>ConsultantAssign(Consultant, ProjectManager)</code></li>
+					</ul>
+				</section>
+
+				<!-- Exercise 3: Question -->
+				<section>
+					<h3 style="color: #50fa7b;">Exercise 1: Employee Directory</h3>
+					<p class="text-smaller">Consider a schema for tracking employee locations:</p>
+					<pre><code class="language-sql">Employee(EmpID, Name, DeptCode, DeptLocation)</code></pre>
+					<p class="text-smaller" style="text-align: left; margin-top: 20px;"><strong>Business Rules:</strong></p>
+					<ul class="text-smaller">
+						<li>Each employee has one name and belongs to exactly one department.</li>
+						<li>Each department is located in exactly one specific location.</li>
+					</ul>
+					<div class="fragment" style="margin-top: 30px; border-top: 1px solid #6272a4; padding-top: 15px;">
+						<p class="text-smaller"><strong>Task:</strong> Identify the FDs, evaluate for BCNF compliance, and decompose if necessary.</p>
+					</div>
+				</section>
+
+				<!-- Exercise 4: Question -->
+				<section>
+					<h3 style="color: #50fa7b;">Exercise 2: Order Processing</h3>
+					<p class="text-smaller">Consider a schema for storing line items on customer orders:</p>
+					<pre><code class="language-sql">OrderDetail(OrderID, ItemID, Quantity, ItemPrice)</code></pre>
+					<p class="text-smaller" style="text-align: left; margin-top: 20px;"><strong>Business Rules:</strong></p>
+					<ul class="text-smaller">
+						<li>An order line specifies a unique quantity for a given order and item combination.</li>
+						<li>Each item has a single, fixed price globally, regardless of which order it belongs to.</li>
+					</ul>
+					<div class="fragment" style="margin-top: 30px; border-top: 1px solid #6272a4; padding-top: 15px;">
+						<p class="text-smaller"><strong>Task:</strong> Identify the FDs, evaluate for BCNF compliance, and decompose if necessary.</p>
+					</div>
+				</section>
+
+				<!-- Exercise 6: Question -->
+				<section>
+					<h3 style="color: #50fa7b;">Exercise 3: Semester Transcripts</h3>
+					<p class="text-smaller">Consider a schema for tracking university transcripts:</p>
+					<pre><code class="language-sql">Transcript(StudentID, CourseCode, Semester, Grade)</code></pre>
+					<p class="text-smaller" style="text-align: left; margin-top: 20px;"><strong>Business Rules:</strong></p>
+					<ul class="text-smaller">
+						<li>A student taking a specific course in a specific semester receives exactly one final grade.</li>
+						<li>Grades do not uniquely identify students, courses, or semesters.</li>
+					</ul>
+					<div class="fragment" style="margin-top: 30px; border-top: 1px solid #6272a4; padding-top: 15px;">
+						<p class="text-smaller"><strong>Task:</strong> Identify the functional dependencies and evaluate if this schema is in 3NF and BCNF. Decompose if necessary.</p>
+					</div>
+				</section>
+
+
+				<!-- Exercise 5: Question -->
+				<section>
+					<h3 style="color: #50fa7b;">Exercise 4: Clinic Appointments</h3>
+					<p class="text-smaller">Consider a schema for managing medical appointments:</p>
+					<pre><code class="language-sql">Appointment(ApptID, PatientID, DoctorID, ApptDate, ClinicAddress)</code></pre>
+					<p class="text-smaller" style="text-align: left; margin-top: 20px;"><strong>Business Rules:</strong></p>
+					<ul class="text-smaller">
+						<li>An appointment ID uniquely identifies the patient, the doctor, and the date of the visit.</li>
+						<li>A doctor practices at exactly one specific clinic address.</li>
+					</ul>
+					<div class="fragment" style="margin-top: 30px; border-top: 1px solid #6272a4; padding-top: 15px;">
+						<p class="text-smaller"><strong>Task:</strong> Identify the FDs, evaluate for BCNF compliance, and decompose if necessary.</p>
+					</div>
+				</section>
+
+
+				<!-- Exercise 7: Question -->
+				<section>
+					<h3 style="color: #50fa7b;">Exercise 5: Clinic Shifts</h3>
+					<p class="text-smaller">Consider a schema for managing specialized clinic schedules:</p>
+					<pre><code class="language-sql">ClinicShift(Doctor, ShiftDay, Specialty, Room)</code></pre>
+					<p class="text-smaller" style="text-align: left; margin-top: 20px;"><strong>Business Rules:</strong></p>
+					<ul class="text-smaller">
+						<li>A doctor working on a specific shift day dictates their medical specialty and the room they are assigned to.</li>
+						<li>Each medical specialty is scheduled on exactly one specific day of the week (e.g., Cardiology is only handled on Mondays).</li>
+						<li>Each room is permanently assigned to exactly one dedicated doctor.</li>
+					</ul>
+					<div class="fragment" style="margin-top: 30px; border-top: 1px solid #6272a4; padding-top: 15px;">
+						<p class="text-smaller"><strong>Task:</strong> Identify the candidate keys and FDs. Verify it is safely in 3NF but not BCNF. Decompose it entirely into BCNF tables.</p>
+					</div>
+				</section>
+			</div>
+		</div>
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../dist/plugin/notes.js"></script>
+		<script src="../dist/plugin/markdown.js"></script>
+		<script src="../dist/plugin/highlight.js"></script>
+		<script src="../dist/plugin/zoom.js"></script>
+		<script src="../dist/plugin/math.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom, RevealMath.MathJax3 ]
+			});
+		</script>
+	</body>
+</html>

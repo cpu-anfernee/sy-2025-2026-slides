@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SE 2141: Chapter 7.4 - Functional-Dependency Theory</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/dracula.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../dist/plugin/highlight/monokai.css">
+		
+		<!-- Custom slide styling -->
+		<link rel="stylesheet" href="index.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+                <!-- Slide 1: Title -->
+				<section>
+					<h2 style="font-size: 1.4em;">Chapter 7: Relational Database Design</h2>
+					<h3 style="color: #bd93f9; font-size: 1.1em;">Subchapter 7.9: Database-Design Process</h3>
+					<div style="margin-top: 40px; font-size: 0.75em; color: #6272a4;">
+						<p>SE 2141 Database Systems</p>
+					</div>
+				</section>
+
+				<!-- Slide 2: E-R Model and Normalization -->
+				<section>
+					<h3>7.9.1 E-R Model and Normalization</h3>
+					<p class="text-smaller">How does normalization fit into the overall database-design process[cite: 121]?</p>
+					<ul>
+						<li class="fragment">When we define an E-R diagram carefully and identify all entity sets correctly, the resulting relational schemas usually need very little further normalization.</li>
+						<li class="fragment">If a generated schema requires normalization, it often points to a flaw in the original E-R design. 
+							<br><span class="text-smaller" style="color: #ffb86c;">For example, if an <code>instructor</code> entity has a functional dependency <code>dept_name &rarr; dept_address</code>, it indicates we should have created a separate <code>department</code> entity in the E-R diagram.</span>
+						</li>
+						<li class="fragment">The E-R design process naturally tends to generate 4NF designs. (e.g., By automatically creating separate schemas for many-to-many relationships and multivalued attributes).</li>
+					</ul>
+				</section>
+
+				<!-- Slide 3: Naming Conventions -->
+				<section>
+					<h3>7.9.2 Naming Conventions</h3>
+					<p class="text-smaller">Consistent naming prevents logical errors and aids developers.</p>
+					<ul>
+						<li class="fragment"><strong>Unique-Role Assumption:</strong> Each attribute name should have a unique meaning. Using <code>number</code> for both a phone number and a room number is dangerous because a join on these attributes would be meaningless.</li>
+						<li class="fragment"><strong>Consistent Generalization:</strong> If attributes of different relations have the exact same meaning (like <code>name</code> for both instructors and students), it is best to use the exact same attribute name, especially if you foresee generalizing them into a <code>person</code> entity later.</li>
+						<li class="fragment"><strong>Key Convention:</strong> It is standard convention to list primary-key attributes first in a schema definition.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 5: Denormalization for Performance -->
+				<section>
+					<h3>7.9.3 Denormalization for Performance</h3>
+					<p class="text-smaller">Occasionally, database designers intentionally choose a schema that has redundant information (i.e., it is not fully normalized).</p>
+					<ul>
+						<li class="fragment"><strong>The Goal:</strong> To improve read performance for specific, time-critical applications by avoiding expensive <code>JOIN</code> operations on the fly.</li>
+						<li class="fragment"><strong>The Penalty:</strong> Extra coding time and execution time are required to keep the redundant copies of data consistent whenever an update occurs.</li>
+						<li class="fragment" style="color: #50fa7b;"><strong>A Better Alternative:</strong> Use a normalized schema, but additionally store the required joined data as a <strong>materialized view</strong>. The database system (not the application code) manages the overhead of keeping the materialized view up to date.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 6: Bad Designs Not Caught by Normalization -->
+				<section>
+					<h3>7.9.4 Other Design Issues</h3>
+					<p class="text-smaller">A schema can be perfectly normalized (e.g., in BCNF) but still be a terrible design.</p>
+					<ul>
+						<li class="fragment"><strong>Creating a New Table Per Year:</strong> e.g., <code>total_inst_2017</code>, <code>total_inst_2018</code>. This requires modifying the database schema and rewriting application queries every single year.</li>
+						<li class="fragment"><strong>Crosstabs (New Column Per Year):</strong> e.g., <code>dept_year(dept_name, total_2017, total_2018)</code>. This also requires schema modification and query rewrites every year.</li>
+						<li class="fragment"><strong>The Solution:</strong> Use a single relation with time as data: <code>total_inst(dept_name, year, size)</code>. This remains static regardless of how much time passes.</li>
+					</ul>
+				</section>
+
+				<!-- Slide 7: Quick Review 2 -->
+				<section>
+					<h3>Quick Review: Checkpoint 2</h3>
+					<p style="color: #50fa7b;">Test your understanding of practical design trade-offs:</p>
+					<ol>
+						<li class="fragment">What is the primary drawback or "penalty" a development team takes on when they choose to denormalize a database for read performance?</li>
+						<li class="fragment">Why is creating a "crosstab" style table (where distinct time periods are represented as distinct columns) considered a bad database design, even if the table is technically in BCNF?</li>
+					</ol>
+				</section>
+
+				<!-- Slide 8: Summary -->
+				<section>
+					<h3>Summary of 7.9</h3>
+					<ol style="font-size: 0.8em;">
+						<li class="fragment"><strong>E-R Synergy:</strong> A high-quality E-R diagram naturally produces relation schemas that are close to, or already in, BCNF and 4NF. Normalization often acts as a double-check on the conceptual design.</li>
+						<li class="fragment"><strong>Naming:</strong> Enforce the unique-role assumption to avoid meaningless joins, but reuse names consistently when attributes share the exact same conceptual meaning.</li>
+						<li class="fragment"><strong>Denormalization:</strong> Sometimes necessary for extreme read performance, but it burdens the application with maintaining consistency. Materialized views are usually a safer alternative.</li>
+						<li class="fragment"><strong>Time Series Pitfalls:</strong> Never encode data values (like years or categories) into table names or column names; store them as data values within rows to prevent constant schema modifications.</li>
+					</ol>
+				</section>
+			</div>
+		</div>
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../dist/plugin/notes.js"></script>
+		<script src="../dist/plugin/markdown.js"></script>
+		<script src="../dist/plugin/highlight.js"></script>
+		<script src="../dist/plugin/zoom.js"></script>
+		<script src="../dist/plugin/math.js"></script>
+		<script>
+			// Initialize reveal.js with all assets mapped to flat dist/plugin root directories
+			Reveal.initialize({
+				hash: true,
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom, RevealMath.MathJax3 ]
+			});
+		</script>
+	</body>
+</html>
